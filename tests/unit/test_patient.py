@@ -11,7 +11,9 @@ def test_patient_dashboard_requires_login(client):
 
 def test_patient_dashboard_content(client, app):
     with app.app_context():
-        u = User(name="Rahim Uddin", email="rahim@patient.test", role="patient")
+        u = User(
+            name="Rahim Uddin", email="rahim@patient.test", role="patient"
+        )
         u.set_password("Pass1234!")
         db.session.add(u)
         db.session.flush()
