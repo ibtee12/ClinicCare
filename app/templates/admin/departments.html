@@ -1,55 +1,218 @@
 {% extends "base.html" %}
 
-{% block title %}Departments - ClinicCare{% endblock %}
+{% block title %}Departments Management - ClinicCare{% endblock %}
+
+{% block extra_head %}
+<style>
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .admin-title h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .admin-title p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+  }
+  .admin-nav-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .pill-link {
+    padding: 0.45rem 0.95rem;
+    border-radius: 9999px;
+    background: white;
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .pill-link:hover, .pill-link.active {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-color: var(--primary);
+  }
+  .dept-grid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 1.75rem;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .dept-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .form-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .form-card h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+  .form-group {
+    margin-bottom: 1.15rem;
+  }
+  .form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+  .form-control {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text);
+    transition: border-color 0.15s;
+    background: #fafafa;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+  }
+  .content-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .card-top {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-top h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+  .modern-table th {
+    background: #f8fafc;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .modern-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .modern-table tr:last-child td {
+    border-bottom: none;
+  }
+  .modern-table tr:hover {
+    background: #fcfdfe;
+  }
+  .dept-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-weight: 700;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    display: inline-block;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 rounded-3 p-4 mb-4">
-            <h4 class="fw-bold mb-3">Add Department</h4>
-            <form method="POST">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Department Name</label>
-                    <input type="text" name="name" class="form-control" required placeholder="e.g. Cardiology">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Description</label>
-                    <textarea name="description" class="form-control" rows="3" placeholder="Specialty details..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Add Department</button>
-            </form>
-        </div>
+<div class="admin-header">
+  <div class="admin-title">
+    <h1>🏥 Clinical Departments</h1>
+    <p>Organize medical specialties, outpatient units and treatment divisions</p>
+  </div>
+  <div class="admin-nav-pills">
+    <a href="{{ url_for('admin.dashboard') }}" class="pill-link">Overview</a>
+    <a href="{{ url_for('admin.list_doctors') }}" class="pill-link">Doctors</a>
+    <a href="{{ url_for('admin.departments') }}" class="pill-link active">Departments</a>
+    <a href="{{ url_for('admin.appointments') }}" class="pill-link">Appointments</a>
+    <a href="{{ url_for('admin.reports') }}" class="pill-link">Financial Reports</a>
+  </div>
+</div>
+
+<div class="dept-grid">
+  <div class="form-card">
+    <h2>➕ Add Department</h2>
+    <form method="POST">
+      <div class="form-group">
+        <label class="form-label">Department Name</label>
+        <input type="text" name="name" class="form-control" placeholder="e.g. Ophthalmology" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description & Scope</label>
+        <textarea name="description" class="form-control" rows="4" placeholder="Brief summary of treatments and outpatient procedures..."></textarea>
+      </div>
+      <button type="submit" class="btn" style="width: 100%; padding: 0.75rem;">Create Department</button>
+    </form>
+  </div>
+
+  <div class="content-card">
+    <div class="card-top">
+      <h2>Active Specialties Directory</h2>
+      <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">{{ departments|length }} Registered</span>
     </div>
-    <div class="col-md-8">
-        <div class="card shadow-sm border-0 rounded-3">
-            <div class="card-header bg-white py-3">
-                <h5 class="fw-bold mb-0">Clinical Departments</h5>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for d in departments %}
-                        <tr>
-                            <td>#{{ d.id }}</td>
-                            <td class="fw-bold">{{ d.name }}</td>
-                            <td>{{ d.description or 'None' }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="3" class="text-center py-4 text-muted">No departments created yet.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div style="overflow-x: auto;">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th style="width: 70px;">ID</th>
+            <th style="width: 220px;">Specialty Name</th>
+            <th>Clinical Scope & Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in departments %}
+          <tr>
+            <td style="font-weight: 700; color: var(--text-muted);">#{{ d.id }}</td>
+            <td>
+              <span class="dept-badge">{{ d.name }}</span>
+            </td>
+            <td style="color: #475569; font-size: 0.88rem;">{{ d.description or 'No explicit description provided.' }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+              No clinical departments registered.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  </div>
 </div>
 {% endblock %}

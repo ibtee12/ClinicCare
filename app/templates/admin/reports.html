@@ -2,68 +2,250 @@
 
 {% block title %}Financial & Revenue Reports - ClinicCare{% endblock %}
 
+{% block extra_head %}
+<style>
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .admin-title h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .admin-title p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+  }
+  .admin-nav-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .pill-link {
+    padding: 0.45rem 0.95rem;
+    border-radius: 9999px;
+    background: white;
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .pill-link:hover, .pill-link.active {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-color: var(--primary);
+  }
+  .revenue-hero {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    color: white;
+    padding: 2rem 2.25rem;
+    border-radius: 14px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  .revenue-hero h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+  }
+  .revenue-hero .grand-total {
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-top: 0.4rem;
+  }
+  .revenue-hero .sub-stat {
+    background: rgba(255,255,255,0.15);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    backdrop-filter: blur(4px);
+    text-align: right;
+  }
+  .reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 1.75rem;
+  }
+  @media (max-width: 600px) {
+    .reports-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .content-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .card-top {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-top h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+  .modern-table th {
+    background: #f8fafc;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .modern-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .modern-table tr:last-child td {
+    border-bottom: none;
+  }
+  .modern-table tr:hover {
+    background: #fcfdfe;
+  }
+  .progress-bar-bg {
+    background: #f1f5f9;
+    border-radius: 9999px;
+    height: 8px;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 0.4rem;
+  }
+  .progress-bar-fill {
+    background: var(--primary);
+    height: 100%;
+    border-radius: 9999px;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h2 class="fw-bold text-dark">Clinic Financial & Revenue Reports</h2>
-        <p class="text-muted">Breakdown of gross clinic earnings by specialist and billing period.</p>
-    </div>
+<div class="admin-header">
+  <div class="admin-title">
+    <h1>📊 Clinic Financial & Revenue Reports</h1>
+    <p>Comprehensive accounting overview of billed services, doctor earnings and monthly settlements</p>
+  </div>
+  <div class="admin-nav-pills">
+    <a href="{{ url_for('admin.dashboard') }}" class="pill-link">Overview</a>
+    <a href="{{ url_for('admin.list_doctors') }}" class="pill-link">Doctors</a>
+    <a href="{{ url_for('admin.departments') }}" class="pill-link">Departments</a>
+    <a href="{{ url_for('admin.appointments') }}" class="pill-link">Appointments</a>
+    <a href="{{ url_for('admin.reports') }}" class="pill-link active">Financial Reports</a>
+  </div>
 </div>
 
-<div class="row g-4 mb-4">
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0 rounded-3 p-4 h-100">
-            <h5 class="fw-bold mb-3">Revenue by Doctor</h5>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Doctor</th>
-                            <th class="text-end">Revenue ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for doc_name, rev in doctor_revenue.items() %}
-                        <tr>
-                            <td class="fw-bold">Dr. {{ doc_name }}</td>
-                            <td class="text-end fw-bold text-success">${{ "%.2f"|format(rev) }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="2" class="text-center text-muted py-3">No paid invoices recorded.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="revenue-hero">
+  <div>
+    <h2>Total Clinic Revenue Collected</h2>
+    <div class="grand-total">${{ "%.2f"|format(total_revenue) }}</div>
+  </div>
+  <div class="sub-stat">
+    <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.9;">Accounting Status</div>
+    <div style="font-size: 1.25rem; font-weight: 700; margin-top: 0.2rem;">All Settled Invoices</div>
+  </div>
+</div>
+
+<div class="reports-grid">
+  <!-- Revenue by Doctor -->
+  <div class="content-card">
+    <div class="card-top">
+      <h2>Revenue by Specialist</h2>
+      <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">{{ doctor_revenue|length }} Specialists</span>
     </div>
-    <div class="col-md-6">
-        <div class="card shadow-sm border-0 rounded-3 p-4 h-100">
-            <h5 class="fw-bold mb-3">Monthly Collections</h5>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Month</th>
-                            <th class="text-end">Total ($)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for month, rev in monthly_revenue.items() %}
-                        <tr>
-                            <td class="fw-bold">{{ month }}</td>
-                            <td class="text-end fw-bold text-primary">${{ "%.2f"|format(rev) }}</td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="2" class="text-center text-muted py-3">No monthly transactions.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div style="overflow-x: auto;">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Specialist Doctor</th>
+            <th style="width: 150px; text-align: right;">Total Generated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for doc_name, rev in doctor_revenue.items() %}
+          <tr>
+            <td>
+              <div style="font-weight: 700; color: var(--text);">{{ doc_name }}</div>
+              <div class="progress-bar-bg">
+                {% set pct = (rev / total_revenue * 100) if total_revenue > 0 else 0 %}
+                <div class="progress-bar-fill" style="width: {{ pct }}%;"></div>
+              </div>
+            </td>
+            <td style="text-align: right; font-weight: 700; color: #0f766e; font-size: 1rem;">
+              ${{ "%.2f"|format(rev) }}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="2" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              No doctor revenue recorded.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
+  </div>
+
+  <!-- Monthly Collections -->
+  <div class="content-card">
+    <div class="card-top">
+      <h2>Monthly Collections</h2>
+      <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Billing Cycles</span>
+    </div>
+    <div style="overflow-x: auto;">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Billing Period</th>
+            <th style="width: 150px; text-align: right;">Gross Receipts</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for month, rev in monthly_revenue.items() %}
+          <tr>
+            <td style="font-weight: 700; color: var(--text);">{{ month }}</td>
+            <td style="text-align: right; font-weight: 700; color: #0284c7; font-size: 1rem;">
+              ${{ "%.2f"|format(rev) }}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="2" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+              No monthly transactions recorded.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

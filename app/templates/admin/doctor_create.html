@@ -2,48 +2,141 @@
 
 {% block title %}Register Doctor - ClinicCare{% endblock %}
 
+{% block extra_head %}
+<style>
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .admin-title h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .admin-title p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+  }
+  .form-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .form-card h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.75rem;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 600px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  .form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+  .form-control {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: #fafafa;
+    color: var(--text);
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-7">
-        <div class="card shadow-sm border-0 rounded-3 p-4">
-            <h3 class="fw-bold mb-3">Register Clinical Specialist</h3>
-            <form method="POST">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Doctor Full Name</label>
-                    <input type="text" name="name" class="form-control" placeholder="Dr. John Doe" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Email Address</label>
-                    <input type="email" name="email" class="form-control" placeholder="john.doe@cliniccare.test" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Temporary Password</label>
-                    <input type="password" name="password" class="form-control" required minlength="8">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Department</label>
-                    <select name="department_id" class="form-select" required>
-                        <option value="">Select Department</option>
-                        {% for dept in departments %}
-                        <option value="{{ dept.id }}">{{ dept.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Qualifications</label>
-                    <input type="text" name="qualifications" class="form-control" placeholder="MBBS, FCPS" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Consultation Fee ($)</label>
-                    <input type="number" step="0.01" name="fee" class="form-control" value="500.00" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Professional Biography</label>
-                    <textarea name="bio" class="form-control" rows="3" placeholder="Specialist with over 10 years experience..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary w-100 py-2">Create Doctor Profile</button>
-            </form>
-        </div>
+<div class="admin-header">
+  <div class="admin-title">
+    <h1>👨‍⚕️ Register Clinical Specialist</h1>
+    <p>Onboard a new physician and establish medical department and fee credentials</p>
+  </div>
+  <a href="{{ url_for('admin.list_doctors') }}" class="btn btn-outline">
+    &larr; Back to Doctor List
+  </a>
+</div>
+
+<div class="form-card">
+  <h2>Specialist Information</h2>
+  <form method="POST">
+    <div class="form-row">
+      <div>
+        <label class="form-label">Doctor Full Name</label>
+        <input type="text" name="name" class="form-control" placeholder="Dr. John Doe" required>
+      </div>
+      <div>
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" placeholder="john.doe@cliniccare.test" required>
+      </div>
     </div>
+
+    <div class="form-row">
+      <div>
+        <label class="form-label">Temporary Password</label>
+        <input type="password" name="password" class="form-control" required minlength="8" placeholder="At least 8 chars">
+      </div>
+      <div>
+        <label class="form-label">Department / Specialty</label>
+        <select name="department_id" class="form-control" required>
+          <option value="">Select Specialty</option>
+          {% for dept in departments %}
+          <option value="{{ dept.id }}">{{ dept.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label class="form-label">Medical Qualifications</label>
+        <input type="text" name="qualifications" class="form-control" placeholder="MBBS, FCPS, MD" required>
+      </div>
+      <div>
+        <label class="form-label">Consultation Fee ($)</label>
+        <input type="number" step="0.01" name="fee" class="form-control" value="500.00" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Professional Biography & Focus</label>
+      <textarea name="bio" class="form-control" rows="3" placeholder="Consultant physician with experience in internal medicine and outpatient diagnostics..."></textarea>
+    </div>
+
+    <button type="submit" class="btn" style="width: 100%; padding: 0.8rem; font-size: 0.95rem;">
+      Create Specialist Account
+    </button>
+  </form>
 </div>
 {% endblock %}

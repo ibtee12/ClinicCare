@@ -1,80 +1,250 @@
 {% extends "base.html" %}
 
-{% block title %}Clinic Admin Dashboard - ClinicCare{% endblock %}
+{% block title %}Clinic Administration Dashboard - ClinicCare{% endblock %}
+
+{% block extra_head %}
+<style>
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .admin-title h1 {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .admin-title p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.25rem;
+  }
+  .admin-nav-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .pill-link {
+    padding: 0.45rem 0.95rem;
+    border-radius: 9999px;
+    background: white;
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .pill-link:hover, .pill-link.active {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-color: var(--primary);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2.25rem;
+  }
+  .stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.35rem 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  }
+  .stat-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+  }
+  .stat-number {
+    font-size: 1.85rem;
+    font-weight: 800;
+    margin-top: 0.35rem;
+    color: var(--text);
+  }
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+  }
+  .icon-teal { background: #ccfbf1; color: #0f766e; }
+  .icon-blue { background: #e0f2fe; color: #0369a1; }
+  .icon-purple { background: #f3e8ff; color: #7e22ce; }
+  .icon-emerald { background: #dcfce7; color: #15803d; }
+
+  .content-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  .card-top {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-top h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+  .modern-table th {
+    background: #f8fafc;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .modern-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .modern-table tr:last-child td {
+    border-bottom: none;
+  }
+  .modern-table tr:hover {
+    background: #fcfdfe;
+  }
+  .badge-status {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .status-confirmed { background: #e0f2fe; color: #0284c7; }
+  .status-completed { background: #dcfce7; color: #16a34a; }
+  .status-cancelled { background: #fee2e2; color: #dc2626; }
+  .status-noshow { background: #fef3c7; color: #d97706; }
+  .status-pending { background: #f1f5f9; color: #475569; }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <h2 class="fw-bold text-dark">Clinic Administration Dashboard</h2>
-        <p class="text-muted">High-level clinic operational metrics, appointments, and doctors.</p>
-    </div>
+<div class="admin-header">
+  <div class="admin-title">
+    <h1>🛡️ Clinic Administration Dashboard</h1>
+    <p>Operational health, real-time consultation metrics and financial summaries</p>
+  </div>
+  <div class="admin-nav-pills">
+    <a href="{{ url_for('admin.dashboard') }}" class="pill-link active">Overview</a>
+    <a href="{{ url_for('admin.list_doctors') }}" class="pill-link">Doctors</a>
+    <a href="{{ url_for('admin.departments') }}" class="pill-link">Departments</a>
+    <a href="{{ url_for('admin.appointments') }}" class="pill-link">Appointments</a>
+    <a href="{{ url_for('admin.reports') }}" class="pill-link">Financial Reports</a>
+  </div>
 </div>
 
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 rounded-3 p-3 bg-white">
-            <span class="text-muted small fw-bold text-uppercase">Total Patients</span>
-            <h2 class="fw-bold text-primary mt-2 mb-0">{{ total_patients }}</h2>
-        </div>
+<div class="stats-grid">
+  <div class="stat-card">
+    <div>
+      <div class="stat-label">Total Patients</div>
+      <div class="stat-number">{{ total_patients }}</div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 rounded-3 p-3 bg-white">
-            <span class="text-muted small fw-bold text-uppercase">Active Doctors</span>
-            <h2 class="fw-bold text-success mt-2 mb-0">{{ active_doctors }}</h2>
-        </div>
+    <div class="stat-icon icon-teal">👥</div>
+  </div>
+  <div class="stat-card">
+    <div>
+      <div class="stat-label">Active Doctors</div>
+      <div class="stat-number">{{ active_doctors }}</div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 rounded-3 p-3 bg-white">
-            <span class="text-muted small fw-bold text-uppercase">Appointments Today</span>
-            <h2 class="fw-bold text-info mt-2 mb-0">{{ appointments_today }}</h2>
-        </div>
+    <div class="stat-icon icon-blue">🩺</div>
+  </div>
+  <div class="stat-card">
+    <div>
+      <div class="stat-label">Appointments Today</div>
+      <div class="stat-number">{{ appointments_today }}</div>
     </div>
-    <div class="col-md-3">
-        <div class="card shadow-sm border-0 rounded-3 p-3 bg-white">
-            <span class="text-muted small fw-bold text-uppercase">Total Revenue</span>
-            <h2 class="fw-bold text-warning mt-2 mb-0">${{ "%.2f"|format(total_revenue) }}</h2>
-        </div>
+    <div class="stat-icon icon-purple">📅</div>
+  </div>
+  <div class="stat-card">
+    <div>
+      <div class="stat-label">Total Revenue</div>
+      <div class="stat-number" style="color: #0f766e;">${{ "%.2f"|format(total_revenue) }}</div>
     </div>
+    <div class="stat-icon icon-emerald">💳</div>
+  </div>
 </div>
 
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card shadow-sm border-0 rounded-3">
-            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0">Recent Appointments</h5>
-                <a href="{{ url_for('admin.appointments') }}" class="btn btn-sm btn-outline-primary">View All</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Patient</th>
-                            <th>Doctor</th>
-                            <th>Date & Time</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for apt in recent_appointments %}
-                        <tr>
-                            <td>#{{ apt.id }}</td>
-                            <td>{{ apt.patient.name }}</td>
-                            <td>Dr. {{ apt.doctor.user.name }}</td>
-                            <td>{{ apt.start_datetime.strftime('%b %d, %Y %I:%M %p') }}</td>
-                            <td>
-                                <span class="badge bg-secondary">{{ apt.status }}</span>
-                            </td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center py-4 text-muted">No appointments recorded yet.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+<div class="content-card">
+  <div class="card-top">
+    <h2>Recent Clinic Appointments</h2>
+    <a href="{{ url_for('admin.appointments') }}" class="btn btn-outline" style="padding: 0.35rem 0.85rem; font-size: 0.85rem;">View All Appointments &rarr;</a>
+  </div>
+  <div class="table-responsive">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Patient Name</th>
+          <th>Assigned Doctor</th>
+          <th>Date & Time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for apt in recent_appointments %}
+        <tr>
+          <td style="font-weight: 700; color: var(--text-muted);">#{{ apt.id }}</td>
+          <td style="font-weight: 600;">{{ apt.patient.name }}</td>
+          <td>{{ apt.doctor.user.name }}</td>
+          <td>{{ apt.start_datetime.strftime('%b %d, %Y • %I:%M %p') }}</td>
+          <td>
+            {% set s = apt.status %}
+            <span class="badge-status {% if s == 'CONFIRMED' %}status-confirmed{% elif s == 'COMPLETED' %}status-completed{% elif s == 'CANCELLED' %}status-cancelled{% elif s == 'NO_SHOW' %}status-noshow{% else %}status-pending{% endif %}">
+              {{ s }}
+            </span>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+            No appointments registered in system yet.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}
