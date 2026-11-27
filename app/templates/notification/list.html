@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}My Notifications - ClinicCare{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-dark mb-0">System Notifications</h2>
+        <p class="text-muted">Updates regarding appointments, schedule changes, and billing.</p>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="list-group list-group-flush">
+        {% for notif in notifications %}
+        <div class="list-group-item p-3 d-flex justify-content-between align-items-center {% if not notif.is_read %}bg-light{% endif %}">
+            <div>
+                <span class="badge {% if notif.channel == 'sms' %}bg-info{% elif notif.channel == 'email' %}bg-primary{% else %}bg-secondary{% endif %} mb-1">
+                    {{ notif.channel|upper }}
+                </span>
+                <p class="mb-1 text-dark">{{ notif.message }}</p>
+                <small class="text-muted">{{ notif.created_at.strftime('%b %d, %Y %I:%M %p') }}</small>
+            </div>
+            <div>
+                {% if not notif.is_read %}
+                <form method="POST" action="{{ url_for('notification.mark_read', notification_id=notif.id) }}">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary">Mark Read</button>
+                </form>
+                {% else %}
+                <span class="text-muted small">Read</span>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-muted">
+            <p class="mb-0">You have no notifications at this time.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

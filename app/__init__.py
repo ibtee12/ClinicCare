@@ -32,16 +32,18 @@ def create_app(test_config=None):
     from app.routes.doctor import doctor_bp
     from app.routes.appointment import appointment_bp
     from app.routes.billing import billing_bp
+    from app.routes.admin import admin_bp
+    from app.routes.api import api_bp
+    from app.routes.notification import notification_bp
     flask_app.register_blueprint(auth_bp)
     flask_app.register_blueprint(patient_bp)
     flask_app.register_blueprint(public_bp)
     flask_app.register_blueprint(doctor_bp)
     flask_app.register_blueprint(appointment_bp)
     flask_app.register_blueprint(billing_bp)
-
-    @flask_app.route("/admin/dashboard")
-    def admin_dashboard():
-        return "Admin Dashboard"
+    flask_app.register_blueprint(admin_bp)
+    flask_app.register_blueprint(api_bp)
+    flask_app.register_blueprint(notification_bp)
 
     # Error handlers
     @flask_app.errorhandler(403)
