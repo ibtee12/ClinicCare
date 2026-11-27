@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Reschedule Appointment #{{ apt.id }} - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="max-width: 550px; margin: 1.5rem auto; background: white; padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border);">
+  <h1 style="font-size: 1.75rem; color: var(--text); margin-bottom: 0.5rem;">Reschedule Appointment</h1>
+  <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem;">
+    Current Slot: <strong>{{ apt.start_datetime.strftime('%b %d, %Y at %I:%M %p') }}</strong> with Dr. {{ apt.doctor.user.name }}
+  </p>
+
+  <form method="POST" action="/appointments/reschedule/{{ apt.id }}">
+    <div style="margin-bottom: 1.5rem;">
+      <label for="new_slot_time" style="display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem;">New Date &amp; Time (YYYY-MM-DD HH:MM)</label>
+      <input type="text" id="new_slot_time" name="new_slot_time" value="{{ suggested_time }}" required placeholder="YYYY-MM-DD HH:MM"
+        style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+      <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; display: block;">
+        Rescheduling is free of charge up to 2 hours before the original slot.
+      </small>
+    </div>
+
+    <div style="display: flex; gap: 1rem;">
+      <button type="submit" class="btn" style="flex: 1; padding: 0.75rem;">Confirm Reschedule</button>
+      <a href="/appointments" class="btn btn-outline" style="padding: 0.75rem;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
