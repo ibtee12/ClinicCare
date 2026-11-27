@@ -16,7 +16,10 @@ def test_api_v1_doctors_list(client, app):
         db.session.flush()
 
         doc = DoctorProfile(
-            user_id=u.id, department_id=dept.id, qualifications="BDS", fee=600.0
+            user_id=u.id,
+            department_id=dept.id,
+            qualifications="BDS",
+            fee=600.0,
         )
         db.session.add(doc)
         db.session.commit()
@@ -53,7 +56,8 @@ def test_api_v1_available_slots(client, app):
         db.session.commit()
         doc_id = u.id
 
-    res = client.get(f"/api/v1/doctors/{doc_id}/slots?date={date.today().isoformat()}")
+    iso_today = date.today().isoformat()
+    res = client.get(f"/api/v1/doctors/{doc_id}/slots?date={iso_today}")
     assert res.status_code == 200
     slots = res.get_json()
     assert len(slots) == 2
