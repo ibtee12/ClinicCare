@@ -1,4 +1,3 @@
-import pytest
 from app.patterns.strategy import (
     NoDiscountStrategy,
     SeniorCitizenDiscountStrategy,
@@ -52,7 +51,7 @@ def test_zero_and_negative_base_fee():
 
 
 def test_select_best_discount_non_stacking():
-    # Patient is Senior (20%), Student (15%), First Visit (10%), with RUET2026 promo (10%)
+    # Senior (20%), Student (15%), First Visit (10%), Promo RUET2026 (10%)
     # Best discount should be SeniorCitizen (20% = 200.0), NEVER stacking
     patient_info = {
         "age": 65,
