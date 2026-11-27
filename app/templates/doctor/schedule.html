@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Schedule - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+      <h1 style="font-size: 1.85rem; color: var(--text);">Weekly Availability Schedule</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Configure your consultation hours and appointment slot duration</p>
+    </div>
+    <a href="/doctor/dashboard" class="btn btn-outline">&larr; Back to Dashboard</a>
+  </div>
+
+  <!-- Add Availability Rule Form -->
+  <div style="background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 2rem;">
+    <h3 style="font-size: 1.15rem; color: var(--text); margin-bottom: 1rem;">+ Add Recurring Weekly Availability Rule</h3>
+    <form method="POST" action="/doctor/schedule" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) 120px; gap: 1rem; align-items: flex-end;">
+      <div>
+        <label for="weekday" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Day of Week</label>
+        <select id="weekday" name="weekday" style="width: 100%; padding: 0.65rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.9rem;">
+          {% for idx in range(7) %}
+            <option value="{{ idx }}">{{ weekday_names[idx] }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="start_time" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Start Time</label>
+        <input type="time" id="start_time" name="start_time" value="09:00" required
+          style="width: 100%; padding: 0.65rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.9rem;">
+      </div>
+
+      <div>
+        <label for="end_time" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">End Time</label>
+        <input type="time" id="end_time" name="end_time" value="13:00" required
+          style="width: 100%; padding: 0.65rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.9rem;">
+      </div>
+
+      <div>
+        <label for="slot_minutes" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Slot Length</label>
+        <select id="slot_minutes" name="slot_minutes" style="width: 100%; padding: 0.65rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.9rem;">
+          <option value="15">15 Minutes</option>
+          <option value="20" selected>20 Minutes</option>
+          <option value="30">30 Minutes</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn" style="padding: 0.65rem;">Add Slot</button>
+    </form>
+  </div>
+
+  <!-- Current Availability List -->
+  <div style="background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1.5rem;">
+    <h3 style="font-size: 1.15rem; color: var(--text); margin-bottom: 1rem;">Configured Active Schedule Rules</h3>
+    {% if availabilities %}
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="text-align: left; border-bottom: 1.5px solid var(--border); font-size: 0.85rem; color: var(--text-muted);">
+            <th style="padding: 0.6rem 0.5rem;">Weekday</th>
+            <th style="padding: 0.6rem 0.5rem;">Hours</th>
+            <th style="padding: 0.6rem 0.5rem;">Slot Duration</th>
+            <th style="padding: 0.6rem 0.5rem; text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in availabilities %}
+          <tr style="border-bottom: 1px solid var(--border); font-size: 0.9rem;">
+            <td style="padding: 0.75rem 0.5rem; font-weight: 600;">{{ weekday_names[a.weekday] }}</td>
+            <td style="padding: 0.75rem 0.5rem;">{{ a.start_time }} &ndash; {{ a.end_time }}</td>
+            <td style="padding: 0.75rem 0.5rem;">{{ a.slot_minutes }} mins</td>
+            <td style="padding: 0.75rem 0.5rem; text-align: right;">
+              <form method="POST" action="/doctor/schedule/delete/{{ a.id }}" style="display: inline;" onsubmit="return confirm('Remove availability rule?');">
+                <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="color: var(--text-muted); font-size: 0.95rem; text-align: center; padding: 2rem;">
+        No availability rules added yet. Add a rule above to allow patients to book appointment slots.
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

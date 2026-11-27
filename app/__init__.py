@@ -28,30 +28,12 @@ def create_app(test_config=None):
     # Register blueprints
     from app.routes.auth import auth_bp
     from app.routes.patient import patient_bp
+    from app.routes.public import public_bp
+    from app.routes.doctor import doctor_bp
     flask_app.register_blueprint(auth_bp)
     flask_app.register_blueprint(patient_bp)
-
-    # Placeholder routes for initial routing during auth tests
-    @flask_app.route("/")
-    def index():
-        return render_template("base.html")
-
-    @flask_app.route("/doctors")
-    def public_doctors():
-        return render_template("base.html")
-
-    @flask_app.route("/doctor/dashboard")
-    def doctor_dashboard():
-        return "Doctor Dashboard"
-
-    @flask_app.route("/doctor/schedule")
-    def doctor_schedule():
-        from app.routes.auth import role_required
-
-        @role_required("doctor")
-        def _view():
-            return "Doctor Schedule"
-        return _view()
+    flask_app.register_blueprint(public_bp)
+    flask_app.register_blueprint(doctor_bp)
 
     @flask_app.route("/admin/dashboard")
     def admin_dashboard():
