@@ -197,4 +197,4 @@ def test_e2e_admin_view_reports(driver, live_server):
     driver.get(live_server + "/admin/reports")
     body_text = driver.find_element(By.TAG_NAME, "body").text
     assert "Clinic Financial & Revenue Reports" in body_text
-    assert "Revenue by Doctor" in body_text
+    assert "Revenue by Specialist" in body_text
