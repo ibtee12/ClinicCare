@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from app.models.user import User
 from app.models.doctor import DoctorProfile
 from app.models.appointment import Appointment
-from app.models.billing import Invoice, Payment
+from app.models.billing import Invoice
 from app.patterns.adapter import PaymentResult
 from app.extensions import db
 

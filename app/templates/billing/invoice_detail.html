@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice #INV-{{ "%04d" % invoice.id }} - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="max-width: 720px; margin: 1.5rem auto; background: white; padding: 3rem; border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+  <!-- Printable Invoice Header -->
+  <div style="display: flex; justify-content: space-between; border-bottom: 2px solid var(--primary); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+    <div>
+      <h1 style="color: var(--primary); font-size: 1.85rem;">🏥 ClinicCare</h1>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">
+        RUET Medical Center Road, Rajshahi 6204<br>
+        Phone: +880 1700-000000 &bull; Email: billing@cliniccare.test
+      </p>
+    </div>
+    <div style="text-align: right;">
+      <h2 style="font-size: 1.5rem; color: var(--text);">INVOICE</h2>
+      <p style="font-weight: 600; font-size: 0.95rem;">#INV-{{ "%04d" % invoice.id }}</p>
+      <p style="color: var(--text-muted); font-size: 0.85rem;">Date: {{ invoice.created_at.strftime('%b %d, %Y') }}</p>
+      <span style="display: inline-block; margin-top: 0.4rem; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700;
+        {% if invoice.status == 'PAID' %}background: #dcfce7; color: #15803d;
+        {% elif invoice.status == 'UNPAID' %}background: #fee2e2; color: #b91c1c;
+        {% else %}background: #f1f5f9; color: #64748b;{% endif %}">
+        {{ invoice.status }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Billed Parties -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; font-size: 0.9rem;">
+    <div>
+      <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">Billed To (Patient)</span>
+      <p style="font-weight: 600; font-size: 1rem; margin-top: 0.25rem;">{{ invoice.appointment.patient.name }}</p>
+      <p style="color: var(--text-muted);">
+        Phone: {{ invoice.appointment.patient.patient_profile.phone if invoice.appointment.patient.patient_profile else 'N/A' }}<br>
+        Age: {{ invoice.appointment.patient.patient_profile.age if invoice.appointment.patient.patient_profile else 'N/A' }}
+      </p>
+    </div>
+    <div style="text-align: right;">
+      <span style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; font-weight: 700;">Consulting Physician</span>
+      <p style="font-weight: 600; font-size: 1rem; margin-top: 0.25rem;">Dr. {{ invoice.appointment.doctor.user.name }}</p>
+      <p style="color: var(--text-muted);">
+        {{ invoice.appointment.doctor.department.name if invoice.appointment.doctor.department else 'General Medicine' }}<br>
+        Slot: {{ invoice.appointment.start_datetime.strftime('%b %d, %Y at %I:%M %p') }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Items Table -->
+  <table style="width: 100%; border-collapse: collapse; margin-bottom: 2rem;">
+    <thead>
+      <tr style="background: #f8fafc; border-bottom: 1.5px solid var(--border); font-size: 0.85rem; color: var(--text-muted); text-align: left;">
+        <th style="padding: 0.75rem;">Description</th>
+        <th style="padding: 0.75rem; text-align: right;">Base Fee</th>
+        <th style="padding: 0.75rem; text-align: right;">Discount</th>
+        <th style="padding: 0.75rem; text-align: right;">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border); font-size: 0.95rem;">
+        <td style="padding: 0.85rem 0.75rem;">
+          Specialist Consultation &amp; Clinical Evaluation<br>
+          <small style="color: var(--text-muted);">Reason: {{ invoice.appointment.reason or 'Routine follow-up' }}</small>
+        </td>
+        <td style="padding: 0.85rem 0.75rem; text-align: right;">{{ "%.2f" % invoice.base_fee }} BDT</td>
+        <td style="padding: 0.85rem 0.75rem; text-align: right; color: var(--success);">
+          -{{ "%.2f" % invoice.discount_amount }} BDT<br>
+          <small style="color: var(--text-muted);">{{ invoice.discount_name }}</small>
+        </td>
+        <td style="padding: 0.85rem 0.75rem; text-align: right; font-weight: 600;">{{ "%.2f" % invoice.total }} BDT</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Total Summary -->
+  <div style="margin-left: auto; width: 300px; margin-bottom: 2.5rem;">
+    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; padding: 0.35rem 0;">
+      <span>Subtotal:</span><span>{{ "%.2f" % invoice.base_fee }} BDT</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; font-size: 0.9rem; padding: 0.35rem 0; color: var(--success);">
+      <span>Discounts:</span><span>-{{ "%.2f" % invoice.discount_amount }} BDT</span>
+    </div>
+    <hr style="margin: 0.5rem 0; border: none; border-top: 1px dashed var(--border);">
+    <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 700; color: var(--primary);">
+      <span>Total Paid:</span><span>{{ "%.2f" % invoice.total }} BDT</span>
+    </div>
+    {% if invoice.payments %}
+      <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; text-align: right;">
+        Trx Ref: {{ invoice.payments[-1].transaction_ref }} ({{ invoice.payments[-1].method|title }})
+      </p>
+    {% endif %}
+  </div>
+
+  <!-- Actions -->
+  <div style="display: flex; justify-content: flex-end; gap: 1rem;" class="no-print">
+    <button onclick="window.print()" class="btn btn-outline">🖨️ Print Receipt</button>
+    <a href="/invoices" class="btn">View All Invoices</a>
+  </div>
+</div>
+
+<style>
+@media print {
+  header, footer, .no-print, .alerts { display: none !important; }
+  body { background: white; }
+  .container { max-width: 100%; margin: 0; padding: 0; }
+}
+</style>
+{% endblock %}

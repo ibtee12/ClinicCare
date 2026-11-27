@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Billing &amp; Invoices - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <div>
+    <h1 style="font-size: 1.85rem; color: var(--text);">Invoices &amp; Billing History</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Track consultation charges, online receipts, and automated refunds</p>
+  </div>
+  <a href="/appointments" class="btn btn-outline">&larr; My Appointments</a>
+</div>
+
+<div style="background: white; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem;">
+  {% if invoices %}
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="text-align: left; border-bottom: 1.5px solid var(--border); font-size: 0.85rem; color: var(--text-muted);">
+            <th style="padding: 0.6rem 0.5rem;">Invoice #</th>
+            <th style="padding: 0.6rem 0.5rem;">Doctor</th>
+            <th style="padding: 0.6rem 0.5rem;">Base Fee</th>
+            <th style="padding: 0.6rem 0.5rem;">Discount</th>
+            <th style="padding: 0.6rem 0.5rem;">Total Payable</th>
+            <th style="padding: 0.6rem 0.5rem;">Status</th>
+            <th style="padding: 0.6rem 0.5rem; text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inv in invoices %}
+          <tr style="border-bottom: 1px solid var(--border); font-size: 0.9rem;">
+            <td style="padding: 0.85rem 0.5rem; font-weight: 600;">#INV-{{ "%04d" % inv.id }}</td>
+            <td style="padding: 0.85rem 0.5rem;">Dr. {{ inv.appointment.doctor.user.name }}</td>
+            <td style="padding: 0.85rem 0.5rem;">{{ "%.2f" % inv.base_fee }} BDT</td>
+            <td style="padding: 0.85rem 0.5rem; color: var(--success);">
+              -{{ "%.2f" % inv.discount_amount }} BDT<br>
+              <small style="color: var(--text-muted);">{{ inv.discount_name }}</small>
+            </td>
+            <td style="padding: 0.85rem 0.5rem; font-weight: 700;">{{ "%.2f" % inv.total }} BDT</td>
+            <td style="padding: 0.85rem 0.5rem;">
+              <span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+                {% if inv.status == 'PAID' %}background: #dcfce7; color: #15803d;
+                {% elif inv.status == 'UNPAID' %}background: #fee2e2; color: #b91c1c;
+                {% else %}background: #f1f5f9; color: #64748b;{% endif %}">
+                {{ inv.status }}
+              </span>
+            </td>
+            <td style="padding: 0.85rem 0.5rem; text-align: right;">
+              {% if inv.status == 'UNPAID' %}
+                <a href="/pay/{{ inv.id }}" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Pay Now</a>
+              {% else %}
+                <a href="/invoices/{{ inv.id }}" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Receipt</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="color: var(--text-muted); text-align: center; padding: 2.5rem; font-size: 1rem;">No billing invoices found.</p>
+  {% endif %}
+</div>
+{% endblock %}

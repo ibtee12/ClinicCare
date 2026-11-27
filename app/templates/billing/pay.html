@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Invoice #INV-{{ "%04d" % invoice.id }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 1rem auto; background: white; padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border);">
+  <h1 style="font-size: 1.75rem; color: var(--text); margin-bottom: 0.5rem;">Consultation Fee Checkout</h1>
+  <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.75rem;">
+    Complete your consultation payment with <strong>Dr. {{ invoice.appointment.doctor.user.name }}</strong>
+  </p>
+
+  <!-- Bill Summary Breakdown -->
+  <div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.95rem;">
+      <span>Consultation Fee:</span>
+      <span>{{ "%.2f" % invoice.base_fee }} BDT</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: var(--success); font-size: 0.95rem;">
+      <span>{{ invoice.discount_name }}:</span>
+      <span>-{{ "%.2f" % invoice.discount_amount }} BDT</span>
+    </div>
+    <hr style="margin: 0.5rem 0; border: none; border-top: 1px dashed var(--border);">
+    <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; color: var(--primary);">
+      <span>Total Amount Payable:</span>
+      <span>{{ "%.2f" % invoice.total }} BDT</span>
+    </div>
+  </div>
+
+  <form method="POST" action="/pay/{{ invoice.id }}" id="pay-form">
+    <div style="margin-bottom: 1.5rem;">
+      <label style="display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem;">Choose Payment Method</label>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <label style="border: 1.5px solid var(--border); border-radius: 8px; padding: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
+          <input type="radio" name="method" value="wallet" checked onchange="togglePaymentFields('wallet')">
+          <div>
+            <strong>Mobile Wallet</strong>
+            <small style="display: block; color: var(--text-muted);">bKash / Nagad</small>
+          </div>
+        </label>
+        <label style="border: 1.5px solid var(--border); border-radius: 8px; padding: 1rem; cursor: pointer; display: flex; align-items: center; gap: 0.75rem;">
+          <input type="radio" name="method" value="card" onchange="togglePaymentFields('card')">
+          <div>
+            <strong>Credit / Debit Card</strong>
+            <small style="display: block; color: var(--text-muted);">Visa / Mastercard</small>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Mobile Wallet Fields -->
+    <div id="wallet-fields" style="margin-bottom: 1.5rem;">
+      <div style="margin-bottom: 1rem;">
+        <label for="wallet_number" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Mobile Account Number (01XXXXXXXXX)</label>
+        <input type="text" id="wallet_number" name="wallet_number" value="01711223344" placeholder="01XXXXXXXXX"
+          style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+      </div>
+      <div>
+        <label for="pin" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Wallet PIN</label>
+        <input type="password" id="pin" name="pin" value="12345" placeholder="5-digit PIN"
+          style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+      </div>
+    </div>
+
+    <!-- Card Fields -->
+    <div id="card-fields" style="display: none; margin-bottom: 1.5rem;">
+      <div style="margin-bottom: 1rem;">
+        <label for="card_number" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Card Number</label>
+        <input type="text" id="card_number" name="card_number" value="4111222233334444" placeholder="4111 2222 3333 4444"
+          style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+        <div>
+          <label for="exp_month" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Month</label>
+          <input type="number" id="exp_month" name="exp_month" value="12" min="1" max="12"
+            style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+        </div>
+        <div>
+          <label for="exp_year" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Year</label>
+          <input type="number" id="exp_year" name="exp_year" value="2028" min="2026" max="2035"
+            style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+        </div>
+        <div>
+          <label for="cvv" style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">CVV</label>
+          <input type="password" id="cvv" name="cvv" value="123" maxlength="4"
+            style="width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn" style="width: 100%; padding: 0.85rem; font-size: 1.05rem;">
+      Authorize &amp; Pay {{ "%.2f" % invoice.total }} BDT
+    </button>
+  </form>
+</div>
+
+<script>
+function togglePaymentFields(method) {
+  document.getElementById('wallet-fields').style.display = (method === 'wallet') ? 'block' : 'none';
+  document.getElementById('card-fields').style.display = (method === 'card') ? 'block' : 'none';
+}
+</script>
+{% endblock %}

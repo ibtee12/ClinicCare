@@ -31,11 +31,13 @@ def create_app(test_config=None):
     from app.routes.public import public_bp
     from app.routes.doctor import doctor_bp
     from app.routes.appointment import appointment_bp
+    from app.routes.billing import billing_bp
     flask_app.register_blueprint(auth_bp)
     flask_app.register_blueprint(patient_bp)
     flask_app.register_blueprint(public_bp)
     flask_app.register_blueprint(doctor_bp)
     flask_app.register_blueprint(appointment_bp)
+    flask_app.register_blueprint(billing_bp)
 
     @flask_app.route("/admin/dashboard")
     def admin_dashboard():
