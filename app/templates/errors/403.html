@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}403 Forbidden - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="text-align: center; max-width: 550px; margin: 4rem auto; padding: 3rem 2rem; background: white; border-radius: 12px; border: 1px solid var(--border);">
+  <div style="font-size: 3.5rem; margin-bottom: 1rem;">🛡️</div>
+  <h1 style="color: var(--danger); font-size: 2rem; margin-bottom: 0.5rem;">Access Denied (403)</h1>
+  <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 2rem;">
+    You do not possess the required clinical authorization or role privileges to access this area.
+  </p>
+  <div style="display: flex; gap: 1rem; justify-content: center;">
+    <a href="/" class="btn">Return to Home</a>
+    <a href="/login" class="btn btn-outline">Switch Account</a>
+  </div>
+</div>
+{% endblock %}

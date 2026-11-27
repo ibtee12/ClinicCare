@@ -1,5 +1,5 @@
 import threading
-from app.patterns.singleton import SingletonMeta, AppConfig, DatabaseSessionManager
+from app.patterns.singleton import AppConfig, DatabaseSessionManager
 
 
 def test_app_config_singleton_identity():
