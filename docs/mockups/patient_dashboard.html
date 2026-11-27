@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Dashboard - ClinicCare</title>
+  <style>
+    :root { --primary: #0d9488; --bg: #f8fafc; --text: #1e293b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); }
+    header { background: white; border-bottom: 1px solid #e2e8f0; padding: 1rem 2rem; display: flex; justify-content: space-between; }
+    .layout { display: flex; max-width: 1200px; margin: 2rem auto; gap: 2rem; padding: 0 1rem; }
+    .sidebar { width: 260px; background: white; border-radius: 8px; padding: 1rem; border: 1px solid #e2e8f0; }
+    .sidebar a { display: block; padding: 0.75rem 1rem; color: #475569; text-decoration: none; border-radius: 6px; margin-bottom: 0.25rem; }
+    .sidebar a.active { background: #ccfbf1; color: var(--primary); font-weight: 600; }
+    .main-content { flex: 1; }
+    .card { background: white; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e2e8f0; }
+    .status-badge { padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; }
+    .badge-confirmed { background: #dcfce7; color: #15803d; }
+    .badge-pending { background: #fef9c3; color: #a16207; }
+    .badge-unpaid { background: #fee2e2; color: #b91c1c; }
+    .btn { background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: 6px; text-decoration: none; font-size: 0.85rem; }
+    .btn-danger { background: #ef4444; }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="font-size: 1.25rem; font-weight: bold; color: var(--primary);">🏥 ClinicCare</div>
+    <div>Welcome, <strong>Rahim Uddin (Patient)</strong> | <a href="/logout">Logout</a></div>
+  </header>
+  <div class="layout">
+    <div class="sidebar">
+      <a href="#" class="active">📅 My Appointments</a>
+      <a href="#">💳 Invoices & Payments (1 Unpaid)</a>
+      <a href="#">🔔 Notifications (2)</a>
+      <a href="#">👤 Profile & History</a>
+    </div>
+    <div class="main-content">
+      <div class="card">
+        <h2>Upcoming Appointments</h2>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+          <thead>
+            <tr style="text-align: left; border-bottom: 1px solid #e2e8f0;">
+              <th style="padding: 0.5rem;">Doctor</th>
+              <th style="padding: 0.5rem;">Department</th>
+              <th style="padding: 0.5rem;">Date & Time</th>
+              <th style="padding: 0.5rem;">Status</th>
+              <th style="padding: 0.5rem;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 0.75rem 0.5rem;">Dr. Farhan Ahmed</td>
+              <td>Cardiology</td>
+              <td>Nov 30, 2026 - 04:00 PM</td>
+              <td><span class="status-badge badge-confirmed">CONFIRMED</span></td>
+              <td>
+                <a href="#" class="btn">Reschedule</a>
+                <a href="#" class="btn btn-danger">Cancel</a>
+              </td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 0.75rem 0.5rem;">Dr. Nusrat Jahan</td>
+              <td>Dermatology</td>
+              <td>Dec 05, 2026 - 10:30 AM</td>
+              <td><span class="status-badge badge-pending">PENDING</span></td>
+              <td>
+                <a href="/pay/12" class="btn">Pay Bill (600 BDT)</a>
+                <a href="#" class="btn btn-danger">Cancel</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Recent Notifications</h2>
+        <ul style="list-style: none; margin-top: 0.75rem;">
+          <li style="padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9;">
+            🔔 <strong>Appointment Confirmed:</strong> Your appointment with Dr. Farhan Ahmed on Nov 30 has been confirmed.
+          </li>
+          <li style="padding: 0.5rem 0;">
+            💳 <strong>Invoice Generated:</strong> Invoice #INV-2026-088 generated for Dr. Nusrat Jahan consultation.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Consultation - ClinicCare</title>
+  <style>
+    :root { --primary: #0d9488; --bg: #f8fafc; --text: #1e293b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 2rem; }
+    .form-box { max-width: 600px; margin: 0 auto; background: white; padding: 2rem; border-radius: 10px; border: 1px solid #e2e8f0; }
+    .form-group { margin-bottom: 1.25rem; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    input, select, textarea { width: 100%; padding: 0.7rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+    .summary-box { background: #f0fdfa; border: 1px solid #99f6e4; padding: 1rem; border-radius: 8px; margin: 1.5rem 0; }
+    .btn { width: 100%; background: var(--primary); color: white; padding: 0.8rem; border: none; border-radius: 6px; font-weight: 700; font-size: 1rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="form-box">
+    <h2>Book Appointment with Dr. Farhan Ahmed</h2>
+    <p style="color: #64748b; margin-bottom: 1.5rem;">Cardiology Specialist &bull; 800 BDT Base Consultation Fee</p>
+    <form>
+      <div class="form-group">
+        <label>Selected Date & Slot</label>
+        <input type="text" value="Monday, Nov 30, 2026 at 04:00 PM" readonly style="background: #f1f5f9;">
+      </div>
+      <div class="form-group">
+        <label>Reason for Visit / Symptoms</label>
+        <textarea rows="3" placeholder="Describe symptoms or clinical checkup reason (e.g. chest tightness, routine blood pressure review)"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Promo Code (Optional)</label>
+        <input type="text" placeholder="Enter coupon (e.g. RUET2026)">
+      </div>
+      <div class="summary-box">
+        <h4>Estimated Bill Summary</h4>
+        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+          <span>Consultation Fee:</span>
+          <span>800 BDT</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; color: #16a34a;">
+          <span>Applicable Discount (Senior Citizen 20%):</span>
+          <span>-160 BDT</span>
+        </div>
+        <hr style="margin: 0.5rem 0; border: none; border-top: 1px dashed #cbd5e1;">
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.1rem;">
+          <span>Total Payable:</span>
+          <span>640 BDT</span>
+        </div>
+      </div>
+      <button type="submit" class="btn">Confirm Appointment & Generate Invoice</button>
+    </form>
+  </div>
+</body>
+</html>
