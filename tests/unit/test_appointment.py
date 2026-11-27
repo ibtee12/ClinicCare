@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 from app.models.user import User
 from app.models.doctor import Department, DoctorProfile
 from app.models.appointment import Appointment
-from app.models.billing import Invoice
 from app.extensions import db
 
 
@@ -12,7 +11,9 @@ def setup_doctor_and_patient(app):
         db.session.add(dept)
         db.session.flush()
 
-        doc_user = User(name="Dr. Kabir", email="kabir@doc.test", role="doctor")
+        doc_user = User(
+            name="Dr. Kabir", email="kabir@doc.test", role="doctor"
+        )
         doc_user.set_password("DocPass123!")
         pat_user = User(name="Hasan", email="hasan@pat.test", role="patient")
         pat_user.set_password("PatPass123!")
@@ -51,7 +52,9 @@ def test_appointment_booking_success(client, app):
     )
     assert res.status_code == 200
     with app.app_context():
-        apt = Appointment.query.filter_by(patient_id=pat_id, doctor_id=doc_id).first()
+        apt = Appointment.query.filter_by(
+            patient_id=pat_id, doctor_id=doc_id
+        ).first()
         assert apt is not None
         assert apt.status == "PENDING"
         assert apt.invoice is not None
@@ -87,7 +90,7 @@ def test_appointment_prevent_double_booking(client, app):
         follow_redirects=True,
     )
     assert res.status_code == 400
-    assert b"already booked" in res.data or b"Slot is no longer available" in res.data
+    assert b"already booked" in res.data or b"another slot" in res.data
 
 
 def test_appointment_cannot_book_in_past(client, app):
