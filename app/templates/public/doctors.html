@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Doctors Directory - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem;">
+  <h1 style="font-size: 1.85rem; color: var(--text);">Doctors Directory</h1>
+  <p style="color: var(--text-muted); font-size: 0.95rem;">Search and book consultation appointments with verified clinical physicians</p>
+</div>
+
+<!-- Filters Bar -->
+<div style="background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 2rem;">
+  <form method="GET" action="/doctors" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+    <div style="flex: 2; min-width: 220px;">
+      <input type="text" name="q" value="{{ search_query }}" placeholder="Search by physician name or keyword..."
+        style="width: 100%; padding: 0.65rem 0.85rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+    </div>
+    <div style="flex: 1; min-width: 180px;">
+      <select name="department" style="width: 100%; padding: 0.65rem 0.85rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+        <option value="">All Departments</option>
+        {% for dept in departments %}
+          <option value="{{ dept.name }}" {% if selected_dept == dept.name %}selected{% endif %}>{{ dept.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn" style="padding: 0.65rem 1.5rem;">Filter</button>
+    {% if search_query or selected_dept %}
+      <a href="/doctors" class="btn btn-outline" style="padding: 0.65rem 1rem;">Reset</a>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Doctors Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+  {% if doctors %}
+    {% for doc in doctors %}
+    <div style="background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+          <div>
+            <h3 style="font-size: 1.25rem; color: var(--text);">Dr. {{ doc.user.name }}</h3>
+            <span style="display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; margin-top: 0.25rem;">
+              {{ doc.department.name if doc.department else 'General Medicine' }}
+            </span>
+          </div>
+          <span style="font-size: 1.8rem;">🩺</span>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+          <strong>Qualifications:</strong> {{ doc.qualifications }}
+        </p>
+        <p style="font-size: 0.85rem; color: #475569; margin-bottom: 1rem; line-height: 1.4;">
+          {{ doc.bio or 'Available for in-person outpatient consultations.' }}
+        </p>
+      </div>
+
+      <div style="border-top: 1px solid var(--border); padding-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Consultation Fee</span>
+          <strong style="color: var(--primary); font-size: 1.1rem;">{{ doc.fee }} BDT</strong>
+        </div>
+        <a href="/doctors/{{ doc.user_id }}" class="btn" style="padding: 0.5rem 1rem; font-size: 0.85rem;">View Slots &rarr;</a>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: white; border-radius: 8px; border: 1px solid var(--border);">
+      <p style="color: var(--text-muted); font-size: 1rem;">No doctors found matching your criteria.</p>
+      <a href="/doctors" class="btn btn-outline" style="margin-top: 1rem;">View All Doctors</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

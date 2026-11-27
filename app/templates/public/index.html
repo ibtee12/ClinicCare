@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}ClinicCare - Modern Clinic Appointments &amp; Billing{% endblock %}
+
+{% block content %}
+<section style="text-align: center; padding: 3.5rem 1rem 2.5rem; max-width: 900px; margin: 0 auto;">
+  <div style="display: inline-block; background: #ccfbf1; color: var(--primary-dark); padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem;">
+    🏥 Professional Healthcare &bull; RUET Medical Center Road
+  </div>
+  <h1 style="font-size: 2.75rem; color: #0f172a; line-height: 1.2; margin-bottom: 1.25rem; font-weight: 800;">
+    Effortless Doctor Appointments &amp; Transparent Clinical Billing
+  </h1>
+  <p style="font-size: 1.15rem; color: var(--text-muted); margin-bottom: 2rem; max-width: 720px; margin-left: auto; margin-right: auto;">
+    Consult experienced physicians across multiple specialties. Pick your time slot, receive automatic student or senior citizen discounts, and settle bills securely.
+  </p>
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <a href="/doctors" class="btn" style="padding: 0.8rem 1.8rem; font-size: 1.05rem;">Find a Doctor &amp; Book</a>
+    {% if not session.get('user_id') %}
+      <a href="/register" class="btn btn-outline" style="padding: 0.8rem 1.8rem; font-size: 1.05rem;">Register Account</a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Departments Section -->
+<section style="margin: 3rem 0;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+    <div>
+      <h2 style="font-size: 1.5rem; color: var(--text);">Clinical Departments</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">Specialized outpatient departments ready to assist your health needs</p>
+    </div>
+    <a href="/doctors" style="color: var(--primary); font-weight: 600; font-size: 0.9rem; text-decoration: none;">View All Doctors &rarr;</a>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
+    {% for dept in departments %}
+    <a href="/doctors?department={{ dept.name }}" style="text-decoration: none; color: inherit; background: white; padding: 1.5rem; border-radius: 10px; border: 1px solid var(--border); transition: transform 0.15s, border-color 0.15s; display: block;">
+      <h3 style="color: var(--primary); font-size: 1.2rem; margin-bottom: 0.5rem;">🩺 {{ dept.name }}</h3>
+      <p style="color: var(--text-muted); font-size: 0.9rem;">{{ dept.description or 'Comprehensive diagnostic and therapy services.' }}</p>
+      <span style="display: inline-block; margin-top: 1rem; color: var(--primary); font-weight: 600; font-size: 0.85rem;">View specialists &rarr;</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Featured Doctors Section -->
+<section style="margin: 4rem 0;">
+  <h2 style="font-size: 1.5rem; color: var(--text); margin-bottom: 1.5rem;">Featured Doctors</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
+    {% for doc in featured_doctors %}
+    <div style="background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">👨‍⚕️</div>
+        <h3 style="font-size: 1.2rem; color: var(--text); margin-bottom: 0.25rem;">Dr. {{ doc.user.name }}</h3>
+        <span style="display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.75rem;">
+          {{ doc.department.name if doc.department else 'General Specialist' }}
+        </span>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;"><strong>Credentials:</strong> {{ doc.qualifications }}</p>
+        <p style="font-size: 0.9rem; font-weight: 700; color: var(--primary);">Fee: {{ doc.fee }} BDT</p>
+      </div>
+      <a href="/doctors/{{ doc.user_id }}" class="btn btn-outline" style="margin-top: 1.25rem; width: 100%;">View Schedule &amp; Slots</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -12,7 +12,9 @@ def test_public_doctor_search_and_filter(client, app):
         db.session.add_all([dept_cardio, dept_derm])
         db.session.flush()
 
-        doc1_user = User(name="Dr. Farhan", email="farhan@doc.test", role="doctor")
+        doc1_user = User(
+            name="Dr. Farhan", email="farhan@doc.test", role="doctor"
+        )
         doc1_user.set_password("DocPass123!")
         db.session.add(doc1_user)
         db.session.flush()

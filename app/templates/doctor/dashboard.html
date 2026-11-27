@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Doctor Dashboard - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+  <div>
+    <h1 style="font-size: 1.85rem; color: var(--text);">Doctor Portal - Dr. {{ user.name }}</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Manage daily patient consultations and clinical availability</p>
+  </div>
+  <a href="/doctor/schedule" class="btn" style="padding: 0.7rem 1.25rem;">⚙️ Manage Weekly Schedule</a>
+</div>
+
+<!-- Today's Appointments -->
+<div style="background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 2rem;">
+  <h2 style="font-size: 1.25rem; color: var(--text); margin-bottom: 1rem;">🩺 Today's Scheduled Patients</h2>
+  {% if today_appointments %}
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="text-align: left; border-bottom: 1.5px solid var(--border); font-size: 0.85rem; color: var(--text-muted);">
+            <th style="padding: 0.6rem 0.5rem;">Slot Time</th>
+            <th style="padding: 0.6rem 0.5rem;">Patient Name</th>
+            <th style="padding: 0.6rem 0.5rem;">Contact</th>
+            <th style="padding: 0.6rem 0.5rem;">Chief Complaint / Reason</th>
+            <th style="padding: 0.6rem 0.5rem;">Status</th>
+            <th style="padding: 0.6rem 0.5rem; text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for apt in today_appointments %}
+          <tr style="border-bottom: 1px solid var(--border); font-size: 0.9rem;">
+            <td style="padding: 0.75rem 0.5rem; font-weight: 600;">{{ apt.start_datetime.strftime('%I:%M %p') }}</td>
+            <td style="padding: 0.75rem 0.5rem;">{{ apt.patient.name }}</td>
+            <td style="padding: 0.75rem 0.5rem;">{{ apt.patient.patient_profile.phone if apt.patient.patient_profile else 'N/A' }}</td>
+            <td style="padding: 0.75rem 0.5rem;">{{ apt.reason or 'Consultation' }}</td>
+            <td style="padding: 0.75rem 0.5rem;">
+              <span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+                {% if apt.status == 'CONFIRMED' %}background: #dcfce7; color: #15803d;
+                {% elif apt.status == 'COMPLETED' %}background: #e0f2fe; color: #0369a1;
+                {% elif apt.status == 'PENDING' %}background: #fef9c3; color: #a16207;
+                {% else %}background: #fee2e2; color: #b91c1c;{% endif %}">
+                {{ apt.status }}
+              </span>
+            </td>
+            <td style="padding: 0.75rem 0.5rem; text-align: right;">
+              <a href="/doctor/appointments/{{ apt.id }}" class="btn" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Visit Notes / Status</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p style="color: var(--text-muted); font-size: 0.95rem; text-align: center; padding: 1.5rem;">No appointments scheduled for today.</p>
+  {% endif %}
+</div>
+
+<!-- Upcoming Future Appointments -->
+<div style="background: white; border-radius: 10px; border: 1px solid var(--border); padding: 1.5rem;">
+  <h2 style="font-size: 1.25rem; color: var(--text); margin-bottom: 1rem;">📅 Upcoming Future Consultations</h2>
+  {% if upcoming_appointments %}
+    <ul style="list-style: none; padding: 0;">
+      {% for apt in upcoming_appointments %}
+      <li style="padding: 0.75rem 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;">
+        <div>
+          <strong>{{ apt.start_datetime.strftime('%b %d, %Y at %I:%M %p') }}</strong> &bull; Patient: {{ apt.patient.name }}
+          <span style="color: var(--text-muted); font-size: 0.85rem; margin-left: 0.5rem;">({{ apt.reason or 'General' }})</span>
+        </div>
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">{{ apt.status }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p style="color: var(--text-muted); font-size: 0.95rem;">No upcoming future appointments.</p>
+  {% endif %}
+</div>
+{% endblock %}

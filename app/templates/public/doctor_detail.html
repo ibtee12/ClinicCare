@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Dr. {{ doctor.user.name }} - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+  <div style="background: white; border-radius: 12px; border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem;">
+    <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: #ccfbf1; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+        👨‍⚕️
+      </div>
+      <div style="flex: 1;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <h1 style="font-size: 1.75rem; color: var(--text);">Dr. {{ doctor.user.name }}</h1>
+            <span style="display: inline-block; background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; margin-top: 0.35rem;">
+              {{ doctor.department.name if doctor.department else 'General Medicine' }}
+            </span>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.85rem; color: var(--text-muted); display: block;">Consultation Fee</span>
+            <span style="font-size: 1.4rem; font-weight: 700; color: var(--primary);">{{ doctor.fee }} BDT</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.95rem; margin-top: 0.75rem; color: var(--text-muted);">
+          <strong>Qualifications:</strong> {{ doctor.qualifications }}
+        </p>
+        <p style="font-size: 0.95rem; margin-top: 0.5rem; color: #334155; line-height: 1.5;">
+          {{ doctor.bio or 'Consultant physician offering clinical diagnoses and treatments.' }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Available Slots Section -->
+  <div style="background: white; border-radius: 12px; border: 1px solid var(--border); padding: 2rem;">
+    <h2 style="font-size: 1.35rem; color: var(--text); margin-bottom: 0.5rem;">Select Appointment Date &amp; Slot</h2>
+    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+      Pick an open consultation slot. Senior citizens (20%) and students (15%) automatically receive discounted rates.
+    </p>
+
+    <!-- Date Picker Form -->
+    <form method="GET" action="/doctors/{{ doctor.user_id }}" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+      <label for="date" style="font-weight: 600; font-size: 0.9rem;">Date:</label>
+      <input type="date" id="date" name="date" value="{{ target_date.strftime('%Y-%m-%d') }}"
+        min="{{ target_date.strftime('%Y-%m-%d') }}" style="padding: 0.5rem 0.85rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+      <button type="submit" class="btn btn-outline" style="padding: 0.5rem 1rem;">View Slots</button>
+    </form>
+
+    <h3 style="font-size: 1.05rem; color: var(--text); margin-bottom: 1rem;">
+      Available Slots for {{ target_date.strftime('%A, %b %d, %Y') }}:
+    </h3>
+
+    {% if slots %}
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem;">
+        {% for s in slots %}
+          {% if s.is_booked %}
+            <div style="background: #f1f5f9; color: #94a3b8; padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.9rem; text-decoration: line-through; cursor: not-allowed; border: 1px solid #e2e8f0;">
+              {{ s.display_time }}<br><small>Booked</small>
+            </div>
+          {% else %}
+            <a href="/book/{{ doctor.user_id }}?time={{ s.datetime.strftime('%Y-%m-%d %H:%M') }}"
+              style="text-decoration: none; display: block; background: #f0fdfa; border: 1.5px solid var(--primary); color: var(--primary); padding: 0.75rem; border-radius: 6px; text-align: center; font-size: 0.9rem; font-weight: 600; transition: all 0.15s;">
+              {{ s.display_time }}<br><small style="color: var(--success); font-weight: normal;">Available</small>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="background: #f8fafc; padding: 2rem; border-radius: 8px; text-align: center; border: 1px dashed var(--border);">
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          No availability slots configured by the doctor for this weekday. Please select a different date.
+        </p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
