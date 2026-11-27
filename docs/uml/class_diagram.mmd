@@ -1,0 +1,139 @@
+classDiagram
+    %% Creational: Singleton
+    class SingletonMeta {
+        -_instances: dict
+        -_lock: Lock
+        +__call__()
+        +reset_instances()
+    }
+    class AppConfig {
+        +SECRET_KEY: str
+        +SQLALCHEMY_DATABASE_URI: str
+        +CANCELLATION_FULL_REFUND_HOURS: int
+        +CANCELLATION_MIN_HOURS: int
+        +MAX_BOOKING_DAYS_AHEAD: int
+        +PROMO_CODES: dict
+    }
+    class DatabaseSessionManager {
+        -_db: SQLAlchemy
+        +set_db(db)
+        +get_session()
+    }
+    SingletonMeta <|-- AppConfig : metaclass
+    SingletonMeta <|-- DatabaseSessionManager : metaclass
+
+    %% Creational: Factory
+    class BaseNotifier {
+        <<abstract>>
+        +send(recipient_id, message, meta) NotificationDispatchResult
+    }
+    class InAppNotifier {
+        +send(recipient_id, message, meta)
+    }
+    class EmailNotifier {
+        +send(recipient_id, message, meta)
+    }
+    class SMSNotifier {
+        +send(recipient_id, message, meta)
+    }
+    class NotificationFactory {
+        -_registry: dict
+        +create(channel) BaseNotifier
+        +register(channel, notifier_cls)
+    }
+    BaseNotifier <|-- InAppNotifier
+    BaseNotifier <|-- EmailNotifier
+    BaseNotifier <|-- SMSNotifier
+    NotificationFactory ..> BaseNotifier : creates
+
+    %% Structural: Adapter
+    class PaymentGateway {
+        <<interface>>
+        +process_payment(amount, payment_data) PaymentResult
+    }
+    class CardGatewayAdapter {
+        -_sdk: LegacyCardProcessorSdk
+        +process_payment(amount, payment_data)
+    }
+    class MobileWalletAdapter {
+        -_sdk: LegacyMobileWalletSdk
+        +process_payment(amount, payment_data)
+    }
+    class LegacyCardProcessorSdk {
+        +charge_card(card_num, month, year, cvv, amount_cents)
+    }
+    class LegacyMobileWalletSdk {
+        +transact(msisdn, amount_bdt, pin)
+    }
+    PaymentGateway <|.. CardGatewayAdapter
+    PaymentGateway <|.. MobileWalletAdapter
+    CardGatewayAdapter --> LegacyCardProcessorSdk : adapts
+    MobileWalletAdapter --> LegacyMobileWalletSdk : adapts
+
+    %% Behavioral: Strategy
+    class DiscountStrategy {
+        <<abstract>>
+        +name: str
+        +calculate(base_fee, patient_info) float
+    }
+    class NoDiscountStrategy {
+        +calculate(base_fee, patient_info)
+    }
+    class SeniorCitizenDiscountStrategy {
+        +calculate(base_fee, patient_info)
+    }
+    class StudentDiscountStrategy {
+        +calculate(base_fee, patient_info)
+    }
+    class FirstVisitDiscountStrategy {
+        +calculate(base_fee, patient_info)
+    }
+    class PromoCodeStrategy {
+        +code: str
+        +calculate(base_fee, patient_info)
+    }
+    class DiscountContext {
+        -_strategy: DiscountStrategy
+        +set_strategy(strategy)
+        +execute(base_fee, patient_info) float
+    }
+    DiscountStrategy <|-- NoDiscountStrategy
+    DiscountStrategy <|-- SeniorCitizenDiscountStrategy
+    DiscountStrategy <|-- StudentDiscountStrategy
+    DiscountStrategy <|-- FirstVisitDiscountStrategy
+    DiscountStrategy <|-- PromoCodeStrategy
+    DiscountContext o-- DiscountStrategy
+
+    %% Behavioral: Observer
+    class AppointmentEvent {
+        +event_type: str
+        +appointment_id: int
+        +patient_id: int
+        +doctor_id: int
+        +payload: dict
+        +timestamp: datetime
+    }
+    class AppointmentObserver {
+        <<interface>>
+        +update(event: AppointmentEvent)
+    }
+    class NotificationObserver {
+        +update(event: AppointmentEvent)
+    }
+    class InvoiceObserver {
+        +update(event: AppointmentEvent)
+    }
+    class AuditLogObserver {
+        +update(event: AppointmentEvent)
+    }
+    class AppointmentSubject {
+        -_observers: list
+        +attach(observer)
+        +detach(observer)
+        +notify(event)
+    }
+    AppointmentObserver <|.. NotificationObserver
+    AppointmentObserver <|.. InvoiceObserver
+    AppointmentObserver <|.. AuditLogObserver
+    AppointmentSubject o-- AppointmentObserver
+    AppointmentSubject ..> AppointmentEvent : broadcasts
