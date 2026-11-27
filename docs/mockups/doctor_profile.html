@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Profile & Available Slots - ClinicCare</title>
+  <style>
+    :root { --primary: #0d9488; --bg: #f8fafc; --text: #1e293b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 2rem; }
+    .container { max-width: 900px; margin: 0 auto; background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .doctor-header { display: flex; gap: 2rem; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 1.5rem; }
+    .avatar { width: 90px; height: 90px; border-radius: 50%; background: #ccfbf1; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+    .badge { background: #e0f2fe; color: #0284c7; padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.85rem; font-weight: 600; }
+    .slot-picker { margin-top: 2rem; }
+    .date-row { display: flex; gap: 1rem; margin: 1rem 0; overflow-x: auto; }
+    .date-btn { padding: 0.6rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; background: white; cursor: pointer; text-align: center; }
+    .date-btn.active { border-color: var(--primary); background: #f0fdfa; font-weight: bold; }
+    .slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+    .slot { padding: 0.6rem; text-align: center; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+    .slot:hover:not(.booked) { background: #0d9488; color: white; border-color: #0d9488; }
+    .slot.booked { background: #f1f5f9; color: #94a3b8; cursor: not-allowed; text-decoration: line-through; }
+    .btn { background: #0d9488; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="doctor-header">
+      <div class="avatar">👨‍⚕️</div>
+      <div>
+        <h1>Dr. Farhan Ahmed</h1>
+        <p><span class="badge">Cardiology</span> &bull; <strong>MBBS, FCPS (Cardiology), MRCP (UK)</strong></p>
+        <p style="color: #64748b; margin-top: 0.5rem;">Senior Consultant Cardiologist with 14+ years of clinical practice in adult echocardiography and ischemic heart disease.</p>
+        <p style="margin-top: 0.5rem;"><strong>Consultation Fee:</strong> 800 BDT</p>
+      </div>
+    </div>
+
+    <div class="slot-picker">
+      <h3>Select Appointment Date & Time</h3>
+      <div class="date-row">
+        <button class="date-btn active">Mon, Nov 30<br><small>5 slots</small></button>
+        <button class="date-btn">Tue, Dec 01<br><small>6 slots</small></button>
+        <button class="date-btn">Wed, Dec 02<br><small>4 slots</small></button>
+        <button class="date-btn">Thu, Dec 03<br><small>Fully Booked</small></button>
+      </div>
+
+      <h4>Available Slots for Monday, Nov 30:</h4>
+      <div class="slots-grid">
+        <div class="slot">04:00 PM</div>
+        <div class="slot booked">04:20 PM</div>
+        <div class="slot">04:40 PM</div>
+        <div class="slot">05:00 PM</div>
+        <div class="slot booked">05:20 PM</div>
+        <div class="slot">05:40 PM</div>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <button class="btn">Proceed to Booking (04:00 PM)</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

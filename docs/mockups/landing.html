@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClinicCare - Modern Healthcare Appointment & Billing</title>
+  <style>
+    :root { --primary: #0d9488; --primary-dark: #0f766e; --secondary: #0284c7; --bg: #f8fafc; --text: #1e293b; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; }
+    header { background: white; border-bottom: 1px solid #e2e8f0; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .brand { font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+    nav a { margin-left: 1.5rem; text-decoration: none; color: #475569; font-weight: 500; }
+    .btn { background: var(--primary); color: white; padding: 0.6rem 1.2rem; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; }
+    .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+    .hero { padding: 4rem 2rem; text-align: center; max-width: 900px; margin: 0 auto; }
+    .hero h1 { font-size: 2.75rem; color: #0f172a; margin-bottom: 1rem; }
+    .hero p { font-size: 1.25rem; color: #64748b; margin-bottom: 2rem; }
+    .features, .departments { max-width: 1100px; margin: 3rem auto; padding: 0 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+    .card { background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; }
+    .footer { text-align: center; padding: 2rem; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">🏥 ClinicCare</div>
+    <nav>
+      <a href="#how-it-works">How it Works</a>
+      <a href="#departments">Departments</a>
+      <a href="#doctors">Doctors</a>
+      <a href="/login" class="btn btn-outline" style="margin-left: 1rem;">Login</a>
+      <a href="/register" class="btn">Register</a>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>Streamlined Clinic Appointments & Painless Billing</h1>
+      <p>Consult with expert physicians, reserve your consultation slots in real-time, and settle bills seamlessly through mobile wallets and cards.</p>
+      <a href="/doctors" class="btn" style="font-size: 1.1rem; padding: 0.8rem 1.8rem;">Find a Doctor & Book Now</a>
+    </section>
+
+    <section id="departments" class="departments">
+      <h2>Medical Departments</h2>
+      <div class="grid">
+        <div class="card"><h3>🩺 General Medicine</h3><p>Comprehensive primary care, health checkups, and chronic disease management.</p></div>
+        <div class="card"><h3>❤️ Cardiology</h3><p>Advanced cardiovascular diagnostics, hypertension management, and heart health.</p></div>
+        <div class="card"><h3>👶 Pediatrics</h3><p>Compassionate infant, child, and adolescent healthcare and vaccination programs.</p></div>
+        <div class="card"><h3>🔬 Dermatology</h3><p>Skin, hair, and nail clinical consultations and allergy therapies.</p></div>
+      </div>
+    </section>
+
+    <section id="how-it-works" class="features">
+      <h2>How ClinicCare Works</h2>
+      <div class="grid">
+        <div class="card"><h4>1. Find Your Doctor</h4><p>Search by medical department, doctor credentials, and consultation fee.</p></div>
+        <div class="card"><h4>2. Choose a Time Slot</h4><p>Pick a convenient 15 or 30-minute availability slot up to 60 days in advance.</p></div>
+        <div class="card"><h4>3. Instant Digital Bill</h4><p>Automatic senior citizen and student discounts applied with transparent pricing.</p></div>
+        <div class="card"><h4>4. Pay Online & Attend</h4><p>Simulated instant checkout with cards or bKash; receive notifications.</p></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <p>&copy; 2026 ClinicCare - RUET CSE 3206 Software Engineering Sessional Project</p>
+  </footer>
+</body>
+</html>
