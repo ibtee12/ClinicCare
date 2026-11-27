@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Registration - ClinicCare{% endblock %}
+
+{% block content %}
+<div style="max-width: 520px; margin: 2rem auto; background: white; padding: 2.5rem; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <h1 style="font-size: 1.75rem; color: var(--text);">Create Patient Account</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.25rem;">Register to book doctor visits and manage medical billing online</p>
+  </div>
+
+  <form method="POST" action="{{ url_for('auth.register') }}">
+    <div style="margin-bottom: 1.2rem;">
+      <label for="name" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">Full Name</label>
+      <input type="text" id="name" name="name" required placeholder="e.g. Rahim Uddin"
+        style="width: 100%; padding: 0.7rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+    </div>
+
+    <div style="margin-bottom: 1.2rem;">
+      <label for="email" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">Email Address</label>
+      <input type="email" id="email" name="email" required placeholder="name@example.com"
+        style="width: 100%; padding: 0.7rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem;">
+      <div>
+        <label for="phone" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">Mobile Number</label>
+        <input type="text" id="phone" name="phone" required placeholder="017XXXXXXXX"
+          style="width: 100%; padding: 0.7rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+      </div>
+      <div>
+        <label for="age" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">Age</label>
+        <input type="number" id="age" name="age" min="1" max="120" value="25"
+          style="width: 100%; padding: 0.7rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem;">
+      <div>
+        <label for="gender" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">Gender</label>
+        <select id="gender" name="gender" style="width: 100%; padding: 0.7rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div style="display: flex; align-items: center; padding-top: 1.5rem;">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.9rem; font-weight: 500;">
+          <input type="checkbox" name="is_student" value="1" style="width: 18px; height: 18px;">
+          I am a Student (15% discount)
+        </label>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 1.5rem;">
+      <label for="password" style="display: block; font-weight: 600; margin-bottom: 0.35rem; font-size: 0.9rem;">Password (min 8 chars)</label>
+      <input type="password" id="password" name="password" required minlength="8" placeholder="••••••••"
+        style="width: 100%; padding: 0.7rem; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.95rem;">
+    </div>
+
+    <button type="submit" class="btn" style="width: 100%; padding: 0.75rem; font-size: 1rem;">Complete Registration</button>
+  </form>
+
+  <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--text-muted);">
+    Already registered? <a href="{{ url_for('auth.login') }}" style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign in here</a>
+  </div>
+</div>
+{% endblock %}
