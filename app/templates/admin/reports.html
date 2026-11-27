@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Financial & Revenue Reports - ClinicCare{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold text-dark">Clinic Financial & Revenue Reports</h2>
+        <p class="text-muted">Breakdown of gross clinic earnings by specialist and billing period.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-3 p-4 h-100">
+            <h5 class="fw-bold mb-3">Revenue by Doctor</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Doctor</th>
+                            <th class="text-end">Revenue ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc_name, rev in doctor_revenue.items() %}
+                        <tr>
+                            <td class="fw-bold">Dr. {{ doc_name }}</td>
+                            <td class="text-end fw-bold text-success">${{ "%.2f"|format(rev) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted py-3">No paid invoices recorded.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0 rounded-3 p-4 h-100">
+            <h5 class="fw-bold mb-3">Monthly Collections</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Month</th>
+                            <th class="text-end">Total ($)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for month, rev in monthly_revenue.items() %}
+                        <tr>
+                            <td class="fw-bold">{{ month }}</td>
+                            <td class="text-end fw-bold text-primary">${{ "%.2f"|format(rev) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="2" class="text-center text-muted py-3">No monthly transactions.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
